@@ -6,12 +6,15 @@ export class ApiError extends Error {
   }
 }
 
+// Empty when the API shares the client's origin, as with the dev proxy.
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
+
 async function request(method, path, body) {
   let res;
   try {
-    res = await fetch(`/api${path}`, {
+    res = await fetch(`${API_URL}/api${path}`, {
       method,
-      credentials: 'same-origin',
+      credentials: 'include',
       headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
